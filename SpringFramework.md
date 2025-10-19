@@ -1,35 +1,35 @@
 # Spring Framework notes
 
-## Core concepts
-### IoC (Inversion of control):
+# Core concepts
+## IoC (Inversion of control):
 - Design Principle
 - Control of object creation and flow is inverted from the class itself to an external entity.
 
-### DI (Dependency Injection): 
+## DI (Dependency Injection): 
 - Design pattern for loose coupling
 - Instead of class creating its own dependencies, provided from outside
 - Implementation of IoC
 
-### Spring Bean:
+## Spring Bean:
 - Plain Old Java Object(POJO) managed by Spring Framework (IOC container)
 - Configured using XML/Annotations/Java Code
 - POJO annotated with @Component, @Service etc.
 - Defined in a configuration class with @Configuration and @Bean
     - Configuration Class - POJO annotated with @Configuration
 
-#### Life cycle of a Bean:
+### Life cycle of a Bean:
 1. IOC Container started
 2. Container create instance of Bean
 3. Dependencies are injected
 4. Bean is destroyed when container is closed
 
-### IOC container : 
+## IOC container : 
 - Configure & manage Java Objects or **Spring Beans** - declared with @component, @service etc.
 - Responsible for lifeCycle of Beans
 - Uses Dependency injection (DI) to provide object reference during runtime
 
-#### Configuring Spring Beans
-##### Using Java Code
+### Configuring Spring Beans
+#### Using Java Code
 - @Configuration 
     - Create Configuration class - Define how and which beans to create and manage
     - Source of bean definations - Centralize bean defination in one place - replace XML based config
@@ -85,14 +85,14 @@
 - @Autowired - Find and inject required dependencies into a component
     - *Not needed* when only one constructor
 
-### Sub-types of Spring Components
+## Sub-types of Spring Components
 - @Component - General Component annotation - indicates class should be initialized, configured & **managed by IOC container**.
 - Components Meta-annotated with @Component
     - @Repository
     - @Service
     - @Controller
 
-### Bean Naming
+## Bean Naming
 Manual Naming
 ```java
 @Bean("ds") // Bean name is set as "ds"
@@ -108,8 +108,8 @@ public PaymentService(){ // Bean name is set as PaymentService
 }
 ```
 
-### Types of Dependency Injection
-#### Constructor Injection
+## Types of Dependency Injection
+### Constructor Injection
 ```java
 public class Car {
     private final Engine engine;
@@ -119,14 +119,14 @@ public class Car {
     }
 }
 ```
-#### Field Injection
+### Field Injection
 ```java
 public class Car {
     @Autowired // Injected directly into the field by a framework
     private Engine engine;
 }
 ```
-#### Method Injection (Used in Configuration Methods)
+### Method Injection (Used in Configuration Methods)
 ```java
 @Configuration
 public class AppConfig {
@@ -136,7 +136,7 @@ public class AppConfig {
     }
 }
 ```
-#### Setter Methods Injection
+### Setter Methods Injection
 ```java
 public class Car {
     private Engine engine;
@@ -147,8 +147,8 @@ public class Car {
 }
 ```
 
-### Mechanism for Dependency Resolution
-#### Type injection
+## Mechanism for Dependency Resolution
+### Type injection
 ```java
 // PaymentService.java
 public interface PaymentService {
@@ -182,7 +182,10 @@ public class ShoppingService {
 ```
 *Fail on multiple beans: If more than one bean of the same type exists, Spring throws a **NoUniqueBeanDefinitionException**, unless further disambiguation is provided.*
 
-#### Named injection
+### Named injection
+Using **@Qualifier** - Select Bean by name when multiple beans of same type exist in the application context
+
+@Primary - Set a default bean for when no qualifier is specified
 ```java
 // NotificationService.java
 public interface NotificationService {
@@ -191,6 +194,7 @@ public interface NotificationService {
 
 // EmailService.java
 @Component("emailService")
+@Primary // used as default when no qualifier is specified
 public class EmailService implements NotificationService {
     @Override
     public void send(String message) {
@@ -224,10 +228,62 @@ public class OrderService {
 }
 ```
 
+## Bean Scope
+- Life Cycle of Bean - Availability in the context of application
+- When looking for beans, Bean Scope determines lifeCycle and which beans it can interact with
+- Spring Provides Multiple Scopes
+- Default is **Singleton** - helps making it thread safe
+### Define Bean Scope in code
+```java
+@Configuration
+public class MyConfiguration {
+    @Bean
+    @Scope("prototype")
+    public Bean1 bean1() { }
 
+    @Bean
+    @SessionScope // recommended way to define a bean
+    public Bean2 bean2() { }
+}
+```
+### Types of Bean Scoping provided by Spring
+1. Singleton - Only one instance is created - default scope
+2. Prototype - New instance is created each time a bean is requested - carry state for user or thread - cannot be shared
+3. Request - New Bean created for each HTTP request - Only Valid for a single http request
+4. Session - New Bean is created for each session - Valid for a session
+5. Application - Valid for a Lifecycle of a servelet context
+6. WebSocket - Valid for a lifecycle of a websocket
 
+## Special Spring Bean
+### Bean Environment
+- Provides Access to config sources
+- eg. system properties, env variables etc.
+- Determines which profile are active
+- injectable
+![Environment Example](EnvironmentExample.png)
 
-### AOP (Aspect Oriented Programming)
+### Bean Profile
+- Group sets of config properties
+- Conditional Bean loading: Beans are only registered with spring container if associated profiles are active
+#### **@Profile** to control which bean is loaded
+![ProfileExample](profileexample.png)
+#### Programmatical profile Activation
+![Programmatical profile activation](ProfileActivation.png)
+#### Activated by **spring.profiles.active**
+![Profile Activation with config file](image.png)
+
+## @Value Annotation
+- Used at field | constructor | parameter level
+- Expression driven dependency injection
+- Inject Value into variable in a class
+- Used with @PropertySource()
+- Data comes from Properties files | system properties | hardcoded
+### Example
+![Value annotation example](image-1.png)
+### Dynamic Expression to resolve Beans
+![Dynamic Expression](image-2.png)
+
+## AOP (Aspect Oriented Programming)
 - Paradigm for modularity of cross-cutting concerns
 - Cross-cutting concern - feature that affects multiple parts of system - eg. Logging, Security etc
 - Works by creating proxy object at runtime
@@ -246,7 +302,7 @@ public class OrderService {
 
     Here **userServiceMethods()** is an alias for pointcut expression - Named pointcut
 
-### Data Access Framework (DAF) / Data Access Layer (DAL)
+## Data Access Framework (DAF) / Data Access Layer (DAL)
 - High Level Architectural Concept
 - Responsible for interaction with data sources
 - Uses **Data Access Object(DAO)** pattern
@@ -255,7 +311,32 @@ public class OrderService {
     - Service
     - Controller
 
-### MVC
+## MVC
 - Request Based framework
 - Build using MVC pattern
+
+## Best Practices in Spring
+### 1. Split Config classes in multiple classes | Import Config using @Import()
+Example
+```java
+@Configuration
+public class ServiceConfig{
+    @Bean
+    public PaymentService paymentService() { }
+}
+
+@Configuration
+public class RepositoryConfig{
+    @Bean
+    public AccoauntService accountService() { }
+}
+
+@Configuration
+@Import({ServiceConfig.class, RepositoryConfig.class})
+public class AppConfig{
+    @Bean
+    public DataSource dataSource() { }
+}
+```
+### 2. Spring Initializer - Generate Spring Template
 

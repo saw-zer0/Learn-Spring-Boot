@@ -1,5 +1,21 @@
 # Spring Boot Notes 
-## Project Setup
+
+## What is Spring Boot?
+- Built on top of Spring framework
+- Automatically Configures therefore no need for manual config
+### Starter files:
+- Pom or Gradle
+- Facilitate Auto Config
+- Add required Dependencies
+
+## Why Spring Boot?
+- Standalone Apps
+- Embeded servers
+- Comes with Maven or Gradle (Opiniated Starters)
+- Auto Configures Spring Framework
+- Production Ready Features - Health Checks, Metrics, Externalized Configs
+
+##  Project Setup
 project starter -> start.spring.io
 
 pom.xml -> Project Object Model -> Maven uses pom to download dependencies and build the project
