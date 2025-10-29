@@ -18,17 +18,18 @@
 ##  Project Setup
 project starter -> start.spring.io
 
-pom.xml -> Project Object Model -> Maven uses pom to download dependencies and build the project
+## Files and Folders
+- pom.xml -> **Project Object Model** -> Maven uses pom to download dependencies and build the project
+- .mvn -> contains mvn wrapper properties|JAR etc for maven wrapper extension
+- src
+    - main
+        - java - source code
+            - java\com\tutorial\artifact - entry point 
+        - resources - config, static files etc
+            - **application.properties** - config file - do not put sensitive info
+- mvnw | mvnw.cmd -> maven wrapper scripts 
 
-src
-- main
-    - java - source code
-        - java\com\tutorial\artifact - entry point 
-    - resources - config, static files etc
-        - application.properties - config file - do not sensitive info
-
-
-Dependency management
+## Dependency management
 - In order to build a web app following are needed:
     - tomcat - embedded server
     - web - handle web request
@@ -38,17 +39,15 @@ Dependency management
 
     - In spring boot - spring-boot-starter-web
 
-Maven Central:
+## Maven Central:
 - similar to www.npmjs.com for js packages
     - mvn install
     - vscode plugin maven for java
 
-Spring MVC:
-- Used to handle web request in spring boot
-- annotations:
-    - @controller
-    - @RequestMapping()
+## Spring Boot Annotations:
+@SpringBootApplication
 
+## Quick Tips
 Hot Reload:
 - add spring-boot-devtools dependency to pom.xml
 

@@ -61,6 +61,7 @@
     ```
     *Class must be non-final and public*
 - @Bean - declares method as a bean producer
+- @Bean("name") - Set Bean by name when multiple beans of same type exist in the application context
 
 - @Component
     - Register class as a Spring managed component
@@ -183,9 +184,9 @@ public class ShoppingService {
 *Fail on multiple beans: If more than one bean of the same type exists, Spring throws a **NoUniqueBeanDefinitionException**, unless further disambiguation is provided.*
 
 ### Named injection
-Using **@Qualifier** - Select Bean by name when multiple beans of same type exist in the application context
+Using **@Qualifier** - attribute used to resolve ambiguity when multiple beans of the same type exist
 
-@Primary - Set a default bean for when no qualifier is specified
+**@Primary** - Set a default bean for when no qualifier is specified
 ```java
 // NotificationService.java
 public interface NotificationService {
