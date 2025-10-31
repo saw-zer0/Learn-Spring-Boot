@@ -262,18 +262,18 @@ public class MyConfiguration {
 - Determines which profile are active
 - injectable
 
-![Environment Example](EnvironmentExample.png)
+![Environment Example](images/EnvironmentExample.png)
 
 ### Bean Profile
 - Group sets of config properties
 - Conditional Bean loading: Beans are only registered with spring container if associated profiles are active
 - Can have multiple active profiles - profile loaded last will overwrite existing properties
 #### **@Profile** to control which bean is loaded
-![ProfileExample](profileexample.png)
+![ProfileExample](images/profileexample.png)
 #### Programmatical profile Activation
-![Programmatical profile activation](ProfileActivation.png)
+![Programmatical profile activation](images/ProfileActivation.png)
 #### Activated by **spring.profiles.active**
-![Profile Activation with config file](image.png)
+![Profile Activation with config file](images/image.png)
 
 ## @Value Annotation
 - Used at field | constructor | parameter level
@@ -282,9 +282,9 @@ public class MyConfiguration {
 - Used with @PropertySource()
 - Data comes from Properties files | system properties | hardcoded
 ### Example
-![Value annotation example](image-1.png)
+![Value annotation example](images/image-1.png)
 ### Dynamic Expression to resolve Beans
-![Dynamic Expression](image-2.png)
+![Dynamic Expression](images/image-2.png)
 
 ## @PropertySource
 - Used to Load Properties from other sources
@@ -319,7 +319,7 @@ or
     - **AOP Proxy**/**Advised Bean** - A Wrapper around the target object - replace instance with proxy - intercepts method calls - generated at runtime
     - **Weaving** - The process of applying an aspect to target obejct at runtime - create *Advised Object*
 
-    ![Example Aspect](ExampleAspect.png "Aspect Example")
+    ![Example Aspect](images/ExampleAspect.png "Aspect Example")
 
     Here **userServiceMethods()** is an alias for pointcut expression - Named pointcut
 
