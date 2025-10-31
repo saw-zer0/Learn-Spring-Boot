@@ -261,11 +261,13 @@ public class MyConfiguration {
 - eg. system properties, env variables etc.
 - Determines which profile are active
 - injectable
+
 ![Environment Example](EnvironmentExample.png)
 
 ### Bean Profile
 - Group sets of config properties
 - Conditional Bean loading: Beans are only registered with spring container if associated profiles are active
+- Can have multiple active profiles - profile loaded last will overwrite existing properties
 #### **@Profile** to control which bean is loaded
 ![ProfileExample](profileexample.png)
 #### Programmatical profile Activation
@@ -283,6 +285,24 @@ public class MyConfiguration {
 ![Value annotation example](image-1.png)
 ### Dynamic Expression to resolve Beans
 ![Dynamic Expression](image-2.png)
+
+## @PropertySource
+- Used to Load Properties from other sources
+- Example:
+``` java
+@PropertySource("classpath:Custom.Properties")
+```
+or
+``` java
+@PropertySource("file:/path/to/my.properties")
+```
+### @PropertySources
+```java
+@PropertySources({
+    @PropertySource("classpath:custom.properties1")
+    @PropertySource("classpath:custom.properties2")
+})
+```
 
 ## AOP (Aspect Oriented Programming)
 - Paradigm for modularity of cross-cutting concerns
@@ -339,5 +359,13 @@ public class AppConfig{
     public DataSource dataSource() { }
 }
 ```
+
 ### 2. Spring Initializer - Generate Spring Template
 
+
+## Spring Rest
+### Annotations:
+- @Controller
+- @Response
+- @RestController
+- @

@@ -50,4 +50,32 @@ project starter -> start.spring.io
 ## Quick Tips
 Hot Reload:
 - add spring-boot-devtools dependency to pom.xml
+---
+# How does Spring Boot Application Start?
+## Spring Application Startup Process
+**Before the `main()` function:**
 
+1.  `JVM` initializes, loads the `main` class.
+2.  `Static` initializers run in `sequence`.
+
+**Inside `SpringApplication.run()`:**
+
+3.  `SpringApplication` instance created; detects `web` type.
+4.  `Run` listeners activated; `starting event` published.
+5.  `Environment` configured from properties, YML, system `variables`.
+6.  `EnvironmentPreparedEvent` is published to listeners.
+7.  `ApplicationContext` `type` determined and `created`.
+8.  `Initializers` executed on the `context` instance.
+9.  `ApplicationPreparedEvent` is published to listeners.
+10. `Context` refreshes; main `bean creation` phase.
+11. `Bean definitions` loaded via `component scan`.
+12. `Auto-configuration` activates based on `classpath` contents.
+13. `Bean factories` post-processed for `modifications`.
+14. `Bean post-processors` register for later `use`.
+15. `Singletons` instantiated, wired via `dependency injection`.
+16. `Lifecycle` callbacks like `@PostConstruct` are called.
+17. `AOP` proxies applied for specific `features`.
+18. `ContextRefreshedEvent` and `StartedEvent` published.
+19. `Embedded server` starts listening for requests.
+20. `CommandLineRunner` or `ApplicationRunner` execute their logic.
+21. `ApplicationReadyEvent` published; application fully operational.
