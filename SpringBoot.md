@@ -48,8 +48,8 @@ project starter -> start.spring.io
 @SpringBootApplication
 
 ## Quick Tips
-Hot Reload:
-- add spring-boot-devtools dependency to pom.xml
+**Hot Reload** - add spring-boot-devtools dependency to pom.xml
+**Use Record for DTO** instead of class - fields dont require accessors in Records
 ---
 # How does Spring Boot Application Start?
 ## Spring Application Startup Process

@@ -332,10 +332,6 @@ or
     - Service
     - Controller
 
-## MVC
-- Request Based framework
-- Build using MVC pattern
-
 ## Best Practices in Spring
 ### 1. Split Config classes in multiple classes | Import Config using @Import()
 Example
@@ -363,9 +359,36 @@ public class AppConfig{
 ### 2. Spring Initializer - Generate Spring Template
 
 
-## Spring Rest
-### Annotations:
-- @Controller
-- @Response
-- @RestController
-- @
+## MVC
+- Request-Response Based framework
+- Build using MVC pattern
+
+### MVC Annotations:
+- `@Controller`
+- `@Response`
+- `@RestController`
+- `@GetMapping`, `@PostMapping`,`@PutMapping`, `@PatchMapping`, `@DeleteMapping`
+- `@ResponseStatus`
+- `@RequestBody`- Read Body from request
+- `@JsonProperty` - Alias for Fields
+- `@PathVariable` - Read Path Parameter from URI
+- `@RequestParam` - Read Query parameter from URI
+---
+- `@Entity` - Make db models from POJO
+- `@Table` - Set Table/Entity Properties
+- `@Column` - Set Column/Field Properties
+- `@ID` - Set PK
+- `@GeneratedValue` - Generate values for PK - use with @ID - generation type = strategy for generation
+- `@OneToOne()`
+    - MappedBy
+    - Cascade - CascadeType
+- `@ManyToOne()`
+    - MappedBy
+    - Cascade 
+- `@JoinColumn()` - name - 
+- `@JsonManage` - Marks the field that owns the relationship - required unless relationship is unidirectional
+- `@JsonBackReference` - Marks the field is child in relationship
+
+## Spring Data JPA
+- Finder Methods -  Automatically translated into SQL queries by Spring Data JPA
+    - Example - `findByName()`, `findByEmail()`
