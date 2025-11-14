@@ -333,6 +333,7 @@ or
     - Controller
 
 ## Best Practices in Spring
+
 ### 1. Split Config classes in multiple classes | Import Config using @Import()
 Example
 ```java
@@ -373,7 +374,18 @@ public class AppConfig{
 - `@JsonProperty` - Alias for Fields
 - `@PathVariable` - Read Path Parameter from URI
 - `@RequestParam` - Read Query parameter from URI
+
+### Data types:
+- `ResponseEntity` - represent entire HTTP response
+
 ---
+## Spring Data JPA (Model layer)
+- ORM
+- handles Model/Entity and Repository layers
+- Finder Methods -  Automatically translated into SQL queries by Spring Data JPA
+    - Example - `findByName()`, `findByEmail()`
+
+### JPA Annotations:
 - `@Entity` - Make db models from POJO
 - `@Table` - Set Table/Entity Properties
 - `@Column` - Set Column/Field Properties
@@ -389,6 +401,88 @@ public class AppConfig{
 - `@JsonManage` - Marks the field that owns the relationship - required unless relationship is unidirectional
 - `@JsonBackReference` - Marks the field is child in relationship
 
-## Spring Data JPA
-- Finder Methods -  Automatically translated into SQL queries by Spring Data JPA
-    - Example - `findByName()`, `findByEmail()`
+## Service Layer
+- Implement Business Logic and perform Complex Operations
+- Provide Seperation of concerns
+
+## Data Validation
+- spring-boot-starter-validation
+- Validation is done at dto layer
+- `@NotEmpty(message= "some custom message" )`
+- `@AssertTrue`, `@AssertFalse`, `@Negative` etc
+- In VS code (assuming java extensions are enabled) all validation constraints can be found in tab 
+
+`Java Projects -> Maven Dependencies -> Jakarta.Validation -> Jakarta.validation.constraints`
+
+## Error Handling
+- `@ExceptionHandler` -  intercept exceptions and return a custom HTTP response - Example
+``` java
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException exp
+    ){
+        var errors = new HashMap<String, String>();
+        exp.getBindingResult().getAllErrors()
+            .forEach(error -> {
+                var fieldName = ((FieldError) error).getField();
+                var errorMessage = error.getDefaultMessage();
+                errors.put(fieldName, errorMessage);
+            });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+```
+
+## Testing
+- spring-boot-test -> contains core items
+- spring-boot-test-autoconfigure -> auto config for tests
+    - works well but can be too much for tests
+    - often helps to load only the parts of config as required for testing `slice` of application
+    - `slice` restricts component scan - loads a very restricted set of auto-confugurations classes
+
+- spring-boot-starter-test -> imports:
+    - Spring boot test modules
+    - JUnit, AssertJ, Hamcrest etc
+
+### Annotations
+- `@SpringBootTest`
+- for JUnit4 - `@RunWith(SpringRunner.class)`
+
+*Generate test in vscode: right-click -> Go to Test -> Generate test*
+
+- `@Test`
+- `@BeforeEach` - setup() method
+- `@AfterEach` - tearDown() method
+- `@AfterAll`
+- `@BeforeAll`
+
+### Unit Testing
+- `assertEquals()`
+- `assertNotNull()`
+- `assertThrows()`
+
+### Integration Testing
+### End to End Testing
+
+### Test Isolation
+Test a service in isolation of its dependencies
+
+#### Mockito 
+- Library for mocking dependencies for tests
+- Intercepts dependency calls and returns some predefined data
+- `@Mock`
+- `@InjectMocks`
+- `MockitoAnnotations.openMocks()`
+- `Mockito.when()`
+- `Mockito.verify()`
+- `Mockito.times() ` - How many times a function is invoked
+- `Mockito.timeout()` - How long does it take to execute a function
+- `Mockito.ArgumentMatchers.any` - **any** - "Don't Care About the Value, Only the Type"<br>
+    In unit testing with Mockito, you often need to verify that a specific method on a mock object was called, or you need to stub a response when a specific method is called.
+    Normally, Mockito uses equals() comparison for arguments. If you write:
+    ``` java
+    service.updateUser(new User("Alice"));
+    ```
+
+    Mockito will internally check if the User object passed to updateUser is equal to new User("Alice") using its equals() method.
+
+    `any(Class<T> type)` replaces that strict equals() check. It is an argument matcher that relaxes the constraint to a type check only.

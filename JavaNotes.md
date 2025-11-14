@@ -1,0 +1,9 @@
+## List Methods 
+`.stream()`
+`.map()`
+`.collect(Collector.toList())`
+
+## Optional Class
+- Optional type and prevent common NullPointerException (NPE) errors
+- Can be used with `.orElse()`
+- If your query logic ensures that only zero or one result will be returned (e.g., searching by a unique field like email or username), you should declare the return type as `Optional<T>`.
