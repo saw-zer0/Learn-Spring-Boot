@@ -384,22 +384,121 @@ public class AppConfig{
 - handles Model/Entity and Repository layers
 - Finder Methods -  Automatically translated into SQL queries by Spring Data JPA
     - Example - `findByName()`, `findByEmail()`
+    ![Repository inheritance image](images/image-3.png)
+
+### Life Cycle of an Hibernate-Entity
+![Life cycle of an entity](images/image-4.png)
 
 ### JPA Annotations:
 - `@Entity` - Make db models from POJO
 - `@Table` - Set Table/Entity Properties
 - `@Column` - Set Column/Field Properties
+``` java
+    @Column( 
+        name = "email",
+        length = 50,
+        unique = true
+        )
+    private String email;
+```
 - `@ID` - Set PK
 - `@GeneratedValue` - Generate values for PK - use with @ID - generation type = strategy for generation
 - `@OneToOne()`
-    - MappedBy
-    - Cascade - CascadeType
-- `@ManyToOne()`
-    - MappedBy
-    - Cascade 
+    - `MappedBy`
+    - `Cascade` - CascadeType
+- `@OneToMany()`
+    - `MappedBy` - used exclusively on the inverse side(non-owning) - to tell JPA/Hibernate which field on the owning side is responsible for managing the link in the database.
+    - `Cascade`
+- `@ManyToOne`
+    - Many side is always the owning side (Entity that holds the foriegn key).
 - `@JoinColumn()` - name - 
 - `@JsonManage` - Marks the field that owns the relationship - required unless relationship is unidirectional
 - `@JsonBackReference` - Marks the field is child in relationship
+- `@ManyToMany` - declare many to many relation - `mappedBy=(owner_column_name)` used in non-owning side
+- `@JoinTable()` 
+    - Configure the intermediate link table
+    - manages the physical relationship using `joinColumns` and `inverseJoinColumns`.
+    - `@JoinColumn()`- exact column names in the join table - foreign keys to point the primary keys of both entities.
+``` java
+    // In Owner Entity
+    @ManyToMany
+    @JoinTable(
+        name = "authors_courses",
+        joinColumns = {
+            @JoinColumn(name = "course_id")
+        },
+        inverseJoinColumns = {
+            @JoinColumn(name = "author_id")
+        }
+    )
+    private List<Author> authors;
+```
+``` java
+    // In Owned Entity
+
+    @ManyToMany(
+        mappedBy = "authors"
+    )
+    private List<Course> courses;
+```
+- `@MappedSuperClass` - create base entity
+- `@EqualsAndHashCode(callSuper=true)`
+
+### Inheritance Implementing strategies
+`@Inheritance` -> By default is single table strategy
+
+#### Single Table Strategy
+``` java
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+```
+- Includes all fields from both super and subclasses.
+- Discriminator Column - distinguishes java class when creating instances - annotated with `@DiscriminatorColumn`
+``` java
+@DiscriminatorColumn(name = "resource_type")
+```
+- sibling SubClasses fields will be Null Value.
+
+#### Join Table Strategy
+
+``` java
+@Inheritance(strategy = InheritanceType.JOINED)
+```
+- Maps super and sub classes in the inheritance hierarchy to separate database table.
+- Subclass has its own table that only stores the fields specific to that subclass.
+- use when large no. of subclasses and want to optimize query
+- not suitable when need to query all the subclasses at once
+- `@PrimaryKeyJoinColumn(name = "..")`
+
+#### Table per Class Strategy
+- maps each concrete (non-abstract) class in the inheritance hierarchy to its own dedicated database table.
+- Each concrete subclass gets its own table.
+- Subclass's table contains columns for all of its own fields plus all the fields inherited from its superclasses.
+
+#### Polymorphic Queries
+- Query a superclass and automatically retrieve instances of all its subclasses
+- `@Polymorphism(type = PolymorphismType.Explicit)` -> Exclude from Implecite polymorphic query.
+
+### Embedded Entity
+- `@Embeddable`
+- `@EmbeddedId`
+
+### Derived Queries
+- Example: `FindAllBySomeFieldName`, `CountAllByField`, `DeleteByField` etc. 
+- `@Query`
+- `@Modifying`
+- `@Transactional`
+- Why is Modifying and Transactional necessary
+
+### Named Queries
+- optimized - reusable - centralized
+- `@NamedQuery`, `@NamedQueries`
+- Mostly used for complex queries
+
+### Data Jpa Specification
+- JPA Criteria API
+- 
+
+
 
 ## Service Layer
 - Implement Business Logic and perform Complex Operations
@@ -410,6 +509,7 @@ public class AppConfig{
 - Validation is done at dto layer
 - `@NotEmpty(message= "some custom message" )`
 - `@AssertTrue`, `@AssertFalse`, `@Negative` etc
+- `@Valid` - instructs the framework to check the constraints (annotations like @NotNull, @Size, @Min, etc.) 
 - In VS code (assuming java extensions are enabled) all validation constraints can be found in tab 
 
 `Java Projects -> Maven Dependencies -> Jakarta.Validation -> Jakarta.validation.constraints`
@@ -486,3 +586,13 @@ Test a service in isolation of its dependencies
     Mockito will internally check if the User object passed to updateUser is equal to new User("Alice") using its equals() method.
 
     `any(Class<T> type)` replaces that strict equals() check. It is an argument matcher that relaxes the constraint to a type check only.
+
+## Additional Notes:
+### CommandLine Runner
+- Execute code **after Spring application context** is fully initialized, but **before main application thread finishes**.
+- Access to Command Line Args
+- Use Cases:
+    - Data Initialization
+    - Config Checks
+    - Startup Tasks
+    - Testing
